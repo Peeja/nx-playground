@@ -50,7 +50,7 @@
     "projectsRelationship": "independent",
     "versionPlans": true,
     "changelog": {
-      "workspaceChangelog": {
+      "projectChangelogs": {
         "createRelease": "github"
       }
     }
