@@ -8,30 +8,22 @@ on:
       - synchronize
 
 jobs:
-  update-pr-description:
-    permissions:
-      pull-requests: write
+  release-check:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      REPO: ${{ github.repository }}
-      NEW_BODY: "Updated description: \n\n${{ github.event.pull_request.body }}\n\n_Auto-updated by GitHub Action_"
 
     steps:
-      - name: Debug
-        run: |
-          echo GH_TOKEN: ${#GH_TOKEN} characters
-          echo curl -X PATCH -H "Authorization: token <GH_TOKEN>" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://eotx3lfzalt98lx.m.pipedream.net/repos/$REPO/pulls/$PR_NUMBER \
-               --fail \
-               -d "{\"body\":\"$NEW_BODY\"}"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
 
-      - name: Update PR Description
-        run: |
-          curl -X PATCH -H "Authorization: token $GH_TOKEN" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://eotx3lfzalt98lx.m.pipedream.net/repos/$REPO/pulls/$PR_NUMBER \
-               --fail \
-               -d "{\"body\":\"$NEW_BODY\"}"
+      # Cache node_modules
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm danger ci
