@@ -19,6 +19,15 @@ jobs:
       NEW_BODY: "Updated description: \n\n${{ github.event.pull_request.body }}\n\n_Auto-updated by GitHub Action_"
 
     steps:
+      - name: Debug
+        run: |
+          echo GH_TOKEN: ${#GH_TOKEN} characters
+          echo curl -X PATCH -H "Authorization: token <GH_TOKEN>" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/$REPO/pulls/$PR_NUMBER \
+               --fail \
+               -d "{\"body\":\"$NEW_BODY\"}"
+
       - name: Update PR Description
         run: |
           curl -X PATCH -H "Authorization: token $GH_TOKEN" \
