@@ -1,0 +1,15 @@
+name: Release Check
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  print_title_of_pr:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Print Title of PR
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: echo The Title of your PR is $TITLE
