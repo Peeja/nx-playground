@@ -5,15 +5,9 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/release",
-        "main": "packages/release/src/index.ts",
-        "tsConfig": "packages/release/tsconfig.lib.json",
-        "assets": ["packages/release/*.md"]
-      }
+    "test": {
+      // The test here is an integration test, which uses the built CLI
+      "dependsOn": ["build"]
     }
   }
 }

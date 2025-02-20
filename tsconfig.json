@@ -9,8 +9,5 @@
     {
       "path": "./packages/js1"
     }
-  ],
-  "compilerOptions": {
-    "paths": {}
-  }
+  ]
 }

@@ -3,21 +3,26 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "dist/index.js",
+  "bin": {
+    "storacha-release": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "test": "node --import @swc-node/register/esm-register --test test/**/*.spec.ts"
   },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^5.0.1",
+    "@types/execa": "^2.0.2",
     "@types/node": "^20.0.0",
     "chai": "^5.2.0",
+    "execa": "^9.5.2",
     "tsx": "^4.19.3"
   }
 }
