@@ -4,7 +4,13 @@
   "files": [],
   "references": [
     {
+      "path": "./packages/release"
+    },
+    {
       "path": "./packages/js1"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {}
+  }
 }
