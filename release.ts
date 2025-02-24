@@ -1,6 +1,7 @@
 import { releaseVersion, releaseChangelog, releasePublish } from 'nx/release';
 import { simpleGit } from 'simple-git';
-// import { Octokit } from 'octokit';
+import { Octokit } from 'octokit';
+import { createOrUpdateReleasePR } from './gh.js';
 
 const envVar = (name: string) => {
   const value = process.env[name];
@@ -16,8 +17,6 @@ export const REPO_NAME = envVar('GITHUB_REPOSITORY_NAME');
 export const MAIN_BRANCH = envVar('MAIN_BRANCH_NAME');
 export const RELEASE_BRANCH = envVar('RELEASE_BRANCH_NAME');
 
-// const octokit = new Octokit();
-
 const versionResult = await releaseVersion({});
 console.log(versionResult);
 
@@ -27,6 +26,7 @@ const pendingVersions = Object.values(versionResult.projectsVersionData).some(
 
 if (pendingVersions) {
   console.log("There are pending versions. Let's create a release PR.");
+  const octokit = new Octokit();
   await simpleGit().addConfig('user.email', 'rachabot@storacha.network');
   await simpleGit().addConfig('user.name', 'Rachabot');
   await simpleGit().checkoutLocalBranch(RELEASE_BRANCH);
@@ -46,7 +46,19 @@ if (pendingVersions) {
   );
   console.log(changelogs.join('\n\n'));
 
-  // Push to `release` branch & open/update PR
+  const versions = Object.entries(versionResult.projectsVersionData)
+    .map(([project, versionData]) => `${project}@${versionData.newVersion}`)
+    .join(', ');
+
+  createOrUpdateReleasePR({
+    octokit,
+    owner: REPO_OWNER,
+    name: REPO_NAME,
+    releaseBranchName: RELEASE_BRANCH,
+    mainBranchName: MAIN_BRANCH,
+    title: `Release ${versions}`,
+    body: changelogs.join('\n\n'),
+  });
 } else {
   console.log("There are no pending versions. Let's publish the release.");
   const publishResult = await releasePublish({ dryRun: true });
