@@ -1,3 +1,13 @@
+## 1.0.1-0 (2025-02-24)
+
+### 🩹 Fixes
+
+- Added more exclamation points!!! ([18ffe4e](https://github.com/Peeja/nx-playground/commit/18ffe4e))
+
+### ❤️ Thank You
+
+- Petra Jaros
+
 # 1.0.0 (2025-02-18)
 
 ### ⚠️  Breaking Changes
