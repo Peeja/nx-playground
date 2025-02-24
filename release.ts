@@ -12,10 +12,11 @@ const envVar = (name: string) => {
   return value;
 };
 
-export const REPO_OWNER = envVar('GITHUB_REPOSITORY_OWNER');
-export const REPO_NAME = envVar('GITHUB_REPOSITORY_NAME');
-export const MAIN_BRANCH = envVar('MAIN_BRANCH_NAME');
-export const RELEASE_BRANCH = envVar('RELEASE_BRANCH_NAME');
+const REPO_OWNER = envVar('GITHUB_REPOSITORY_OWNER');
+const REPO_NAME = envVar('GITHUB_REPOSITORY_NAME');
+const MAIN_BRANCH = envVar('MAIN_BRANCH_NAME');
+const RELEASE_BRANCH = envVar('RELEASE_BRANCH_NAME');
+const octokit = new Octokit({ auth: envVar('GITHUB_TOKEN') });
 
 const versionResult = await releaseVersion({});
 console.log(versionResult);
@@ -26,7 +27,6 @@ const pendingVersions = Object.values(versionResult.projectsVersionData).some(
 
 if (pendingVersions) {
   console.log("There are pending versions. Let's create a release PR.");
-  const octokit = new Octokit();
   await simpleGit().addConfig('user.email', 'rachabot@storacha.network');
   await simpleGit().addConfig('user.name', 'Rachabot');
   await simpleGit().checkoutLocalBranch(RELEASE_BRANCH);
