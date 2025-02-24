@@ -69,6 +69,7 @@ export const createOrUpdateReleasePR = async ({
         $baseRefName: String!
         $headRefName: String!
         $title: String!
+        $body: String!
       ) {
         createPullRequest(
           input: {
@@ -98,6 +99,7 @@ export const createOrUpdateReleasePR = async ({
       mutation UpdatePullRequestMutation(
         $pullRequestId: ID!
         $title: String!
+        $body: String!
       ) {
         updatePullRequest(
           input: {
