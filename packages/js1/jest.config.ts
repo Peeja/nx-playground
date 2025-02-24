@@ -9,7 +9,7 @@ const swcJestConfig = JSON.parse(
 swcJestConfig.swcrc = false;
 
 export default {
-  displayName: '@nx-playground/js1',
+  displayName: '@peeja/nx-playground--js1',
   preset: '../../jest.preset.cjs',
   testEnvironment: 'node',
   transform: {
