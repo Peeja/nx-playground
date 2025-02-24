@@ -27,6 +27,8 @@ const pendingVersions = Object.values(versionResult.projectsVersionData).some(
 
 if (pendingVersions) {
   console.log("There are pending versions. Let's create a release PR.");
+  simpleGit().addConfig('user.email', 'rachabot@storacha.network');
+  simpleGit().addConfig('user.name', 'Rachabot');
   simpleGit().checkoutLocalBranch(RELEASE_BRANCH);
   const changelogResult = await releaseChangelog({
     versionData: versionResult.projectsVersionData,
