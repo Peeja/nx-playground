@@ -27,17 +27,18 @@ const pendingVersions = Object.values(versionResult.projectsVersionData).some(
 
 if (pendingVersions) {
   console.log("There are pending versions. Let's create a release PR.");
-  simpleGit().addConfig('user.email', 'rachabot@storacha.network');
-  simpleGit().addConfig('user.name', 'Rachabot');
-  simpleGit().checkoutLocalBranch(RELEASE_BRANCH);
+  await simpleGit().addConfig('user.email', 'rachabot@storacha.network');
+  await simpleGit().addConfig('user.name', 'Rachabot');
+  await simpleGit().checkoutLocalBranch(RELEASE_BRANCH);
   const changelogResult = await releaseChangelog({
     versionData: versionResult.projectsVersionData,
     deleteVersionPlans: true,
     createRelease: false,
     gitPush: false,
   });
+  console.log(await simpleGit().status());
   console.log(changelogResult);
-  simpleGit().push('origin', RELEASE_BRANCH, { '--force': null });
+  await simpleGit().push('origin', RELEASE_BRANCH, { '--force': null });
   const changelogs = Object.entries(
     changelogResult.projectChangelogs ?? {}
   ).map(([project, changelog]) =>
