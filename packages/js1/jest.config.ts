@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { readFileSync } from 'fs';
 
 // Reading the SWC compilation config for the spec files
@@ -11,7 +10,7 @@ swcJestConfig.swcrc = false;
 
 export default {
   displayName: '@nx-playground/js1',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.cjs',
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],

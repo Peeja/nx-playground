@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      # Cache node_modules
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Update Release PR or Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          RELEASE_BRANCH_NAME: release
+          NX_VERBOSE_LOGGING: true
+        run: pnpm tsx ./release.ts

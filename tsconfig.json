@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./packages/js1"
+    },
+    {
+      "path": "./tsconfig.release.json"
     }
   ]
 }
