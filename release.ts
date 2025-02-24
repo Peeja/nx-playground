@@ -50,7 +50,7 @@ if (pendingVersions) {
     .map(([project, versionData]) => `${project}@${versionData.newVersion}`)
     .join(', ');
 
-  createOrUpdateReleasePR({
+  await createOrUpdateReleasePR({
     octokit,
     owner: REPO_OWNER,
     name: REPO_NAME,

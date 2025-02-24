@@ -28,6 +28,7 @@ export const createOrUpdateReleasePR = async ({
   title: string;
   body: string;
 }) => {
+  console.log('Checking for an existing pull request');
   const queryResponse = await octokit.graphql<ExistingPullRequestQueryData>(
     /* graphql */ `
     query ExistingPullRequestQuery(
@@ -60,6 +61,7 @@ export const createOrUpdateReleasePR = async ({
   );
 
   if (queryResponse.repository.pullRequests.nodes.length == 0) {
+    console.log('Creating a new pull request');
     await octokit.graphql(
       /* graphql */ `
       mutation CreatePullRequestMutation(
@@ -90,6 +92,7 @@ export const createOrUpdateReleasePR = async ({
       }
     );
   } else {
+    console.log('Updating the existing pull request');
     await octokit.graphql(
       /* graphql */ `
       mutation UpdatePullRequestMutation(
