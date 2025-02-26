@@ -1,4 +1,8 @@
+import path from 'node:path';
+import fs from 'node:fs';
 import { releaseVersion, releaseChangelog, releasePublish } from 'nx/release';
+import { createProjectGraphAsync } from '@nx/devkit';
+import { parseChangelogMarkdown } from 'nx/src/command-line/release/utils/markdown.js';
 import { simpleGit } from 'simple-git';
 import { Octokit } from 'octokit';
 import npmFetch from 'npm-registry-fetch';
@@ -13,6 +17,13 @@ const envVar = (name: string) => {
   return value;
 };
 
+const REPO_OWNER = envVar('GITHUB_REPOSITORY_OWNER');
+const REPO_NAME = envVar('GITHUB_REPOSITORY_NAME');
+const MAIN_BRANCH = envVar('MAIN_BRANCH_NAME');
+const RELEASE_BRANCH = envVar('RELEASE_BRANCH_NAME');
+const octokit = new Octokit({ auth: envVar('GITHUB_TOKEN') });
+const git = simpleGit();
+
 const versionResult = await releaseVersion({});
 console.log(versionResult);
 
@@ -20,16 +31,8 @@ const pendingVersions = Object.values(versionResult.projectsVersionData).some(
   (versionData) => versionData.newVersion
 );
 
-const git = simpleGit();
-
 if (pendingVersions) {
   console.log("There are pending versions. Let's create a release PR.");
-
-  const REPO_OWNER = envVar('GITHUB_REPOSITORY_OWNER');
-  const REPO_NAME = envVar('GITHUB_REPOSITORY_NAME');
-  const MAIN_BRANCH = envVar('MAIN_BRANCH_NAME');
-  const RELEASE_BRANCH = envVar('RELEASE_BRANCH_NAME');
-  const octokit = new Octokit({ auth: envVar('GITHUB_TOKEN') });
 
   await git.addConfig('user.email', 'rachabot@storacha.network');
   await git.addConfig('user.name', 'Rachabot');
@@ -66,55 +69,55 @@ if (pendingVersions) {
 } else {
   console.log("There are no pending versions. Let's publish the release.");
 
-  const newProjectsVersionData = Object.fromEntries(
-    await Promise.all(
-      Object.entries(versionResult.projectsVersionData).map(
-        async (entry): Promise<typeof entry> => {
-          const [project, versionData] = entry;
-          const latestPublishedVersion = await npmFetch
-            .json(`/${project}/latest`)
-            .then((pkg) => pkg.version as string)
-            .catch((e: unknown) => {
-              if (isNotFoundError(e)) {
-                // If no version has been published, use '' as the latest version.
-                return '';
-              } else {
-                throw e;
-              }
-            });
-          if (latestPublishedVersion === versionData.currentVersion) {
-            console.log(
-              `Version ${versionData.currentVersion} already published.`
-            );
-            return [project, versionData];
-          } else {
-            console.log(
-              `Going to publish ${project}@${versionData.currentVersion}`
-            );
-            return [
-              project,
-              {
-                ...versionData,
-                currentVersion: latestPublishedVersion,
-                newVersion: versionData.currentVersion,
-              },
-            ];
-          }
+  const graph = await createProjectGraphAsync();
+  console.log(graph.nodes);
+
+  for (const [project, { currentVersion }] of Object.entries(
+    versionResult.projectsVersionData
+  )) {
+    const needToPublish = await npmFetch(`/${project}/${currentVersion}`)
+      // If the request is successful, the version has already been published.
+      .then(() => false)
+      .catch((e: unknown) => {
+        if (isNotFoundError(e)) {
+          // If the request fails with a 404, the version has not been published yet.
+          return true;
+        } else {
+          // If the request fails with another error, rethrow it.
+          throw e;
         }
-      )
-    )
-  );
+      });
 
-  console.log('newProjectsVersionData:', newProjectsVersionData);
+    const tagName = `${project}@${currentVersion}`;
 
-  // Rerun the changelog to create the GitHub releases and the git tags
-  await releaseChangelog({
-    // versionData: versionResultToPublish.projectsVersionData,
-    versionData: newProjectsVersionData,
-    deleteVersionPlans: true,
-    createRelease: 'github',
-    gitPush: false,
-  });
+    if (!needToPublish) {
+      console.log(`${tagName} already published.`);
+    } else {
+      console.log(`Going to publish ${tagName}`);
+      const changelogPath = path.join(
+        graph.nodes[project].data.sourceRoot ?? '.',
+        'CHANGELOG.md'
+      );
+      const changelogContents = fs.readFileSync(changelogPath).toString();
+      const changelog = parseChangelogMarkdown(changelogContents);
+      const changelogEntry =
+        changelog.releases.find((release) => release.version === currentVersion)
+          ?.body ?? '';
+
+      // Create tag
+      git.addAnnotatedTag(tagName, changelogEntry);
+
+      // Create release
+      octokit.rest.repos.createRelease({
+        name: tagName,
+        tag_name: tagName,
+        body: changelogEntry,
+        prerelease: currentVersion.includes('-'),
+        owner: REPO_OWNER,
+        repo: REPO_NAME,
+      });
+    }
+  }
 
   // Push the tags
   git.pushTags('origin');
