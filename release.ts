@@ -54,6 +54,7 @@ if (pendingVersions) {
   console.log(changelogs.join('\n\n'));
 
   const versions = Object.entries(versionResult.projectsVersionData)
+    .filter(([, versionData]) => versionData.newVersion)
     .map(([project, versionData]) => `${project}@${versionData.newVersion}`)
     .join(', ');
 
