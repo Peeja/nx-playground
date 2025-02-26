@@ -102,6 +102,8 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
+  packages/js2: {}
+
 packages:
 
   '@ampproject/remapping@2.3.0':
