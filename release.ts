@@ -6,7 +6,7 @@ import { parseChangelogMarkdown } from 'nx/src/command-line/release/utils/markdo
 import { simpleGit } from 'simple-git';
 import { Octokit } from 'octokit';
 import npmFetch from 'npm-registry-fetch';
-import { createOrUpdateReleasePR } from './gh.js';
+import { createOrUpdateRelease, createOrUpdateReleasePR } from './gh.js';
 
 const envVar = (name: string) => {
   const value = process.env[name];
@@ -60,7 +60,7 @@ if (pendingVersions) {
   await createOrUpdateReleasePR({
     octokit,
     owner: REPO_OWNER,
-    name: REPO_NAME,
+    repo: REPO_NAME,
     releaseBranchName: RELEASE_BRANCH,
     mainBranchName: MAIN_BRANCH,
     title: `Release ${versions}`,
@@ -79,7 +79,7 @@ if (pendingVersions) {
       // If the request is successful, the version has already been published.
       .then(() => false)
       .catch((e: unknown) => {
-        if (isNotFoundError(e)) {
+        if (isNpmNotFoundError(e)) {
           // If the request fails with a 404, the version has not been published yet.
           return true;
         } else {
@@ -107,14 +107,13 @@ if (pendingVersions) {
       // Create tag
       git.addAnnotatedTag(tagName, changelogEntry);
 
-      // Create release
-      octokit.rest.repos.createRelease({
-        name: tagName,
-        tag_name: tagName,
-        body: changelogEntry,
-        prerelease: currentVersion.includes('-'),
+      createOrUpdateRelease({
+        octokit,
         owner: REPO_OWNER,
         repo: REPO_NAME,
+        tagName,
+        body: changelogEntry,
+        prerelease: currentVersion.includes('-'),
       });
     }
   }
@@ -129,7 +128,7 @@ if (pendingVersions) {
 
 process.exit(0);
 
-function isNotFoundError(e: unknown) {
+function isNpmNotFoundError(e: unknown) {
   return (
     e &&
     typeof e === 'object' &&
