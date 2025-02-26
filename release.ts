@@ -49,7 +49,7 @@ if (pendingVersions) {
   const changelogs = Object.entries(
     changelogResult.projectChangelogs ?? {}
   ).map(([project, changelog]) =>
-    changelog.contents.replace(/^## /, `## ${project}@`)
+    changelog.contents.replace(/^##? /, `## ${project}@`)
   );
   console.log(changelogs.join('\n\n'));
 
