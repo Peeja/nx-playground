@@ -29,8 +29,16 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: |
+          cat <<'EOF' >.npmrc
+          //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
+          registry=https://registry.npmjs.org/
+          always-auth=true
+          EOF
+
       - name: Update Release PR or Release
         env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
           MAIN_BRANCH_NAME: ${{ github.event.repository.default_branch }}
