@@ -1,3 +1,13 @@
+## 1.1.1-0 (2025-02-27)
+
+### 🩹 Fixes
+
+- foobar ([fb2d4db](https://github.com/Peeja/nx-playground/commit/fb2d4db))
+
+### ❤️ Thank You
+
+- Petra Jaros
+
 ## 1.1.0 (2025-02-27)
 
 ### 🚀 Features
