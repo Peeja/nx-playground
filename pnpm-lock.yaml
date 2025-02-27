@@ -108,7 +108,7 @@ importers:
   packages/js2:
     dependencies:
       '@peeja/nx-playground--js1':
-        specifier: workspace:^
+        specifier: 1.1.0
         version: link:../js1
 
 packages:
