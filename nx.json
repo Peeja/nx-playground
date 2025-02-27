@@ -44,15 +44,10 @@
     }
   ],
   "release": {
-    "version": {
-      "preVersionCommand": "echo 'fail!' ; false"
-    },
     "projectsRelationship": "independent",
     "versionPlans": true,
     "changelog": {
-      "projectChangelogs": {
-        "createRelease": "github"
-      }
+      "projectChangelogs": true
     }
   },
   "targetDefaults": {
