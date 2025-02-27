@@ -53,6 +53,9 @@
   "targetDefaults": {
     "test": {
       "dependsOn": ["^build"]
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build"]
     }
   }
 }
