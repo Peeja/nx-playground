@@ -163,3 +163,6 @@ if (pendingVersions.length > 0) {
   log.debug('releasePublish result:', publishResult);
   log.info('Packages published!');
 }
+
+// Process doesn't exit without explicit exit call.
+process.exit(0);
