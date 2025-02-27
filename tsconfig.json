@@ -7,9 +7,6 @@
       "path": "./packages/js1"
     },
     {
-      "path": "./tsconfig.release.json"
-    },
-    {
       "path": "./packages/js2"
     }
   ]
