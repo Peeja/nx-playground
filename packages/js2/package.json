@@ -1,6 +1,6 @@
 {
   "name": "@peeja/nx-playground--js2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publishConfig": {
     "access": "public"
   },
@@ -16,6 +16,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@peeja/nx-playground--js1": "workspace:^"
+    "@peeja/nx-playground--js1": "1.1.0"
   }
 }
