@@ -163,5 +163,3 @@ if (pendingVersions.length > 0) {
   log.debug('releasePublish result:', publishResult);
   log.info('Packages published!');
 }
-
-process.exit(0);
