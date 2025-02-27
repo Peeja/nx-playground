@@ -161,6 +161,21 @@ if (pendingVersions.length > 0) {
   log.info('Publishing packages.');
   const publishResult = await releasePublish({});
   log.debug('releasePublish result:', publishResult);
+
+  const publishFailures = Object.entries(publishResult).flatMap(
+    ([name, { code }]) => (code !== 0 ? [name] : [])
+  );
+
+  if (publishFailures.length > 0) {
+    log.error(
+      [
+        'Some packages failed to publish:',
+        ...publishFailures.map((name) => `- ${name}`),
+      ].join('\n')
+    );
+    process.exit(1);
+  }
+
   log.info('Packages published!');
 }
 
