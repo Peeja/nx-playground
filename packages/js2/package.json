@@ -16,6 +16,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@peeja/nx-playground--js1": "1.1.1-0"
+    "@peeja/nx-playground--js1": "workspace:^"
   }
 }

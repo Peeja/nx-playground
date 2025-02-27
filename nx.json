@@ -46,6 +46,11 @@
   "release": {
     "projectsRelationship": "independent",
     "versionPlans": true,
+    "version": {
+      "generatorOptions": {
+        "preserveLocalDependencyProtocols": true
+      }
+    },
     "changelog": {
       "projectChangelogs": true
     }
