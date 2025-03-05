@@ -1,3 +1,13 @@
+## 1.2.0 (2025-03-05)
+
+### 🚀 Features
+
+- Added more exclamation points here too! ([38a836d](https://github.com/Peeja/nx-playground/commit/38a836d))
+
+### ❤️ Thank You
+
+- Petra Jaros
+
 ## 1.1.1-0 (2025-02-27)
 
 ### 🩹 Fixes
