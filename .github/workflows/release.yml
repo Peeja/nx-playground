@@ -35,12 +35,6 @@ jobs:
           //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}
           registry=https://registry.npmjs.org/
           always-auth=true
-
-          # Allow versioned (non-`workspace:`) references between packages in
-          # the workspace. This lets Nx verify the lockfile after version bumps
-          # and before actually publishing the packages to the registry, since
-          # the bumped versions won't be found in the registry yet.
-          link-workspace-packages=true
           EOF
 
       - name: Update Release PR or Release
