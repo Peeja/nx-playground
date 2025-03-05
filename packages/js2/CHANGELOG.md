@@ -1,3 +1,9 @@
+## 1.1.1 (2025-03-05)
+
+### 🧱 Updated Dependencies
+
+- Updated @peeja/nx-playground--js1 to 1.2.0
+
 ## 1.1.0 (2025-03-05)
 
 ### 🚀 Features
